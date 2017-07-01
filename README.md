@@ -1,2 +1,2 @@
 # phpcms
-A CMS application based on PHP 
+A CMS application built with PHP 
