@@ -1,6 +1,9 @@
 <?php require_once("../includes/session.php"); ?>
 <?php require_once("../includes/db_connection.php"); ?>
 <?php require_once("../includes/functions.php"); ?>
+<?php 
+  confirm_logged_in();
+?>
 <?php require_once("../includes/validation_function.php");?>
 
 <?php find_selected_page(); ?>
@@ -66,7 +69,7 @@ if (isset($_POST['submit'])) {
 
 
 <!--***********************************************************************-->
-
+<?php $layout_context = "admin";?>
 <?php require_once("../includes/layouts/header.php"); //only html inside?> 
 
 
@@ -100,7 +103,7 @@ if (isset($_POST['submit'])) {
           <select name="position">
             <?php 
 
-            $subject_set = find_all_subjects();
+            $subject_set = find_all_subjects(false);
             $subject_count = mysqli_num_rows($subject_set);
 
             for ($count =1; $count <= $subject_count; $count++ ) {

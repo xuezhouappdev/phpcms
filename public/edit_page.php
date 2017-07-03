@@ -1,6 +1,9 @@
 <?php require_once("../includes/session.php"); ?>
 <?php require_once("../includes/db_connection.php"); ?>
 <?php require_once("../includes/functions.php"); ?>
+<?php 
+  confirm_logged_in();
+?>
 <?php require_once("../includes/validation_function.php");?>
 
 <?php find_selected_page(); ?>
@@ -63,6 +66,7 @@ if (isset($_POST['submit'])) {
 
 <!--***********************************************************************-->
 
+<?php $layout_context = "admin";?>
 <?php require_once("../includes/layouts/header.php"); //only html inside?> 
 
 
