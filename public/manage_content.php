@@ -1,41 +1,89 @@
- <?php require_once("../includes/db_connection.php"); ?>
- <?php require_once("../includes/functions.php"); ?>
- <?php require_once("../includes/layouts/header.php"); ?>
-
+<?php require_once("../includes/session.php"); ?>
+<?php require_once("../includes/db_connection.php"); ?>
+<?php require_once("../includes/functions.php"); ?>
+<?php require_once("../includes/layouts/header.php"); ?>
 <?php
-if (isset($_GET["subject"])) {
-   $selected_subject_id = $_GET["subject"];
-   $selected_page_id = null;
-} else if (isset($_GET["page"])) {
-   $selected_subject_id = null;
-   $selected_page_id = $_GET["page"];
-} else {
-   $selected_subject_id = null;
-   $selected_page_id = null;
-}
+  find_selected_page();
 ?>
 
 
 <div id="main">
   <div id="navigation">
+    <br />
+    <a href ="admin.php">&laquo; Main menu</a> <br/>
 		<?php 
 
-		echo navigation($selected_subject_id, $selected_page_id);
+		echo navigation($current_subject, $current_page);
 
 		?>
+		<br />
+		<a href="new_subject.php"> + Add a subject </a>
   </div>
+
+  
   <div id="page">
-    <h2>Manage Content</h2> 
-    <?php if($selected_subject_id) { 
-    		echo $selected_subject_id; }
-    	  elseif($selected_page_id) {
-    	  	echo $selected_page_id;
-    	  }
+    <?php echo message(); ?>
+    
+    
+    <?php if($current_subject) {  ?>
+          <h2>Manage Subject</h2> 
+    	  <?php    
+    		echo "Menu Name: ".htmlentities($current_subject['menu_name'])."</br>"; ?>
+
+        Position: <?php echo $current_subject['position']; ?> <br/>
+        Visible: <?php echo $current_subject['visible'] == 1 ? 'yes' : 'no'; ?> <br/>
+
+        <br/>
+        <a href="edit_subject.php?subject=<?php echo urlencode($current_subject['id']);?> ">Edit Subject </a>
+
+        <div style="margin-top:2em; border-top:1px solid #000000;">
+         <h3>Pages in this subject:</h3>
+         <ul>
+           <?php 
+             $subject_pages = find_pages_for_subject($current_subject['id']);
+             while ($page = mysqli_fetch_assoc($subject_pages)) {
+              echo "<li>";
+              $safe_page_id = urlencode($page ["id"]);
+              echo "<a href =\"manage_content.php?page={$safe_page_id}\" >";
+              echo htmlentities($page["menu_name"]);
+              echo "</a>";
+              echo "</li>";
+             } //the while loop ends
+             ?>
+         </ul>
+          <br />
+          +  <a href ="new_page.php?subject=<?php echo urlencode($current_subject["id"]); ?>"> Add a new page to this subject </a>
+        </div> <!--page div ends-->
+    	  
+
+        <?php }
+    	  else if($current_page) { ?>
+    	  <h2>Manage Page</h2> 
+    	  <?php	
+    	    echo "Page Name: ".htmlentities($current_page['menu_name'])."</br>"; ?>
+        Position: <?php echo $current_page['position']; ?> <br/>
+        Visible: <?php echo $current_page['visible'] == 1 ? 'yes' : 'no'; ?> <br/><br/>
+        content: <br/>
+        <div class="view-content">
+        <?php echo htmlentities($current_page['content']); ?> 
+        </div>
+
+        <br />
+        <br />
+        <a href="edit_page.php?page=<?php echo urlencode($current_page['id']); ?>">Edit page</a>
+
+       
+        <a href="delete_page.php?page=<?php echo urlencode($current_page['id']); ?>" onclick ="return confirm('Are you sure?');">Delete page</a>
+
+ 
+    	  <?php }
+
     	  else {
-    	  	echo "Please select a subjet or a page"; 
+    	  	echo "<br/>Please select a subjet or a page"; 
+
     	  }
 
-   
+    
 
 
      ?>
